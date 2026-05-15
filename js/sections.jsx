@@ -1,30 +1,36 @@
 // ============================================================
-// FC — Page sections
+// FC — Page sections (props-driven, no globals)
 // ============================================================
 
 // ---------- TOP BAR ----------
-const FCTopbar = ({ phone, address }) => (
-  <div className="fc-topbar">
-    <div className="fc-container fc-topbar-inner">
-      <span><FCIcon name="pin" size={12} style={{verticalAlign:'-2px', marginRight:6}}/> {address}</span>
-      <span className="sep">·</span>
-      <span><FCIcon name="clock" size={12} style={{verticalAlign:'-2px', marginRight:6}}/> Lun a Sáb · 8:00 a 19:00</span>
-      <div className="right">
-        <a href={`tel:${phone}`}><FCIcon name="phone" size={12} style={{verticalAlign:'-2px', marginRight:6}}/> +54 11 0000-0000</a>
+const FCTopbar = ({ phone, address, horarios }) => {
+  const today = new Date().getDay();
+  const dayMap = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const todayHr = horarios?.find(h => h.day === dayMap[today]);
+  const status = todayHr?.closed ? 'CERRADO HOY' : `HOY · ${todayHr?.hr || '8:00 – 19:00'}`;
+  return (
+    <div className="fc-topbar">
+      <div className="fc-container fc-topbar-inner">
+        <span><FCIcon name="pin" size={12} style={{verticalAlign:'-2px', marginRight:6}}/> {address}</span>
         <span className="sep">·</span>
-        <a href="#contacto">Envíos a todo el país</a>
+        <span><FCIcon name="clock" size={12} style={{verticalAlign:'-2px', marginRight:6}}/> {status}</span>
+        <div className="right">
+          <a href={`tel:${phone}`}><FCIcon name="phone" size={12} style={{verticalAlign:'-2px', marginRight:6}}/> {phone}</a>
+          <span className="sep">·</span>
+          <a href="#contacto">Envíos a todo el país</a>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ---------- HEADER ----------
-const FCHeader = ({ name, onCartClick, cartCount, onSearch, searchQ, onToggleTheme, theme, suggestions, onPickSuggestion }) => {
+const FCHeader = ({ name, tagline, onCartClick, cartCount, onSearch, searchQ, onToggleTheme, theme, suggestions, onPickSuggestion }) => {
   const [focused, setFocused] = useState(false);
   return (
     <header className="fc-header">
       <div className="fc-container fc-header-inner">
-        <FCLogo name={name} />
+        <FCLogo name={name} tag={tagline}/>
         <div className="fc-search">
           <span className="fc-search-icon"><FCIcon name="search"/></span>
           <input
@@ -39,7 +45,9 @@ const FCHeader = ({ name, onCartClick, cartCount, onSearch, searchQ, onToggleThe
             <div className="fc-search-suggest">
               {suggestions.slice(0, 6).map(s => (
                 <div className="fc-search-suggest-item" key={s.id} onMouseDown={() => onPickSuggestion(s)}>
-                  <div className="fc-search-suggest-thumb"><FCIcon name={s.icon}/></div>
+                  <div className="fc-search-suggest-thumb">
+                    {s.image ? <img src={s.image} style={{width:'100%',height:'100%',objectFit:'cover'}}/> : <FCIcon name={s.icon}/>}
+                  </div>
                   <div>
                     <div className="fc-search-suggest-name">{s.name}</div>
                     <div className="fc-search-suggest-sku">{s.sku} · {s.brand}</div>
@@ -65,29 +73,27 @@ const FCHeader = ({ name, onCartClick, cartCount, onSearch, searchQ, onToggleThe
 };
 
 // ---------- HERO ----------
-const FCHero = ({ onShop, layout = 'cards' }) => (
+const FCHero = ({ hero, onShop, phone, foundedYear }) => (
   <section className="fc-hero">
     <div className="fc-hero-grid-bg"/>
     <div className="fc-container fc-hero-inner">
       <div>
         <div className="fc-eyebrow" style={{color:'var(--fc-primary)'}}>
           <span style={{background:'var(--fc-primary)'}}/>
-          Ferretería industrial · desde 1987
+          {hero.eyebrow}
         </div>
         <h1>
-          TODO PARA<br/>
-          TU OBRA,<br/>
-          <span className="strike">AL MEJOR</span>{' '}
-          <span className="accent">PRECIO.</span>
+          {hero.title1}<br/>
+          {hero.title2}<br/>
+          {hero.titleStrike && <><span className="strike">{hero.titleStrike}</span>{' '}</>}
+          <span className="accent">{hero.titleAccent}</span>
         </h1>
-        <p className="lead">
-          Herramientas profesionales, materiales de construcción, sanitarios y seguridad. Catálogo completo con precios actualizados al día. Atención técnica especializada.
-        </p>
+        <p className="lead">{hero.lead}</p>
         <div style={{display:'flex', gap:12, flexWrap:'wrap'}}>
-          <FCBtn icon="arrow" iconRight={null} size="lg" onClick={onShop}>
+          <FCBtn icon="arrow" size="lg" onClick={onShop}>
             Ver catálogo completo
           </FCBtn>
-          <FCBtn variant="ghost" size="lg" icon="whatsapp" onClick={() => window.open('https://wa.me/5491100000000', '_blank')} style={{borderColor:'#43382A', color:'#fff'}}>
+          <FCBtn variant="ghost" size="lg" icon="whatsapp" onClick={() => window.open(`https://wa.me/${phone}`, '_blank')} style={{borderColor:'#43382A', color:'#fff'}}>
             Consultar precios
           </FCBtn>
         </div>
@@ -103,7 +109,7 @@ const FCHero = ({ onShop, layout = 'cards' }) => (
           </div>
           <div className="item">
             <FCIcon name="phone"/>
-            <div><span className="ttl">Asesoramiento técnico</span><span className="sub">Lun a Sáb 8 a 19</span></div>
+            <div><span className="ttl">Desde {foundedYear}</span><span className="sub">Asesoramiento técnico</span></div>
           </div>
         </div>
       </div>
@@ -131,7 +137,7 @@ const FCHero = ({ onShop, layout = 'cards' }) => (
 );
 
 // ---------- CATEGORÍAS ----------
-const FCCategoriesSection = ({ onPick, activeCat }) => (
+const FCCategoriesSection = ({ categories, onPick, activeCat }) => (
   <section className="fc-section" id="categorias">
     <div className="fc-container">
       <div className="fc-section-head">
@@ -143,7 +149,7 @@ const FCCategoriesSection = ({ onPick, activeCat }) => (
         <FCBtn variant="ghost" iconRight="arrow" onClick={() => onPick(null)}>Ver todas</FCBtn>
       </div>
       <div className="fc-cat-grid">
-        {FC_CATEGORIES.map((c, i) => (
+        {categories.map((c, i) => (
           <button
             key={c.id}
             className={`fc-cat ${i === 0 || i === 4 ? 'featured' : ''} ${activeCat === c.id ? 'featured' : ''}`}
@@ -161,41 +167,44 @@ const FCCategoriesSection = ({ onPick, activeCat }) => (
 );
 
 // ---------- OFERTAS ----------
-const FCOfertas = ({ products, onAdd, onOpen, onFav, favs }) => (
-  <section className="fc-ofertas" id="ofertas">
-    <div className="fc-container">
-      <div className="fc-section-head">
-        <div className="left">
-          <div className="fc-eyebrow">Promos de la semana</div>
-          <h2>Liquidación industrial.<br/>Mientras dure el stock.</h2>
-          <p className="sub">Productos seleccionados con hasta 30% de descuento. Renovamos las ofertas todos los lunes.</p>
+const FCOfertas = ({ products, onAdd, onOpen, onFav, favs }) => {
+  if (!products.length) return null;
+  return (
+    <section className="fc-ofertas" id="ofertas">
+      <div className="fc-container">
+        <div className="fc-section-head">
+          <div className="left">
+            <div className="fc-eyebrow">Promos de la semana</div>
+            <h2>Liquidación industrial.<br/>Mientras dure el stock.</h2>
+            <p className="sub">Productos seleccionados con hasta 30% de descuento. Renovamos las ofertas todos los lunes.</p>
+          </div>
+        </div>
+        <div className="fc-ofertas-grid">
+          {products.slice(0, 4).map(p => (
+            <FCProductCard
+              key={p.id}
+              p={p}
+              onAdd={onAdd}
+              onOpen={onOpen}
+              onFav={onFav}
+              isFav={favs.includes(p.id)}
+            />
+          ))}
         </div>
       </div>
-      <div className="fc-ofertas-grid">
-        {products.slice(0, 4).map(p => (
-          <FCProductCard
-            key={p.id}
-            p={p}
-            onAdd={onAdd}
-            onOpen={onOpen}
-            onFav={onFav}
-            isFav={favs.includes(p.id)}
-          />
-        ))}
-      </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 // ---------- FILTERS SIDEBAR ----------
-const FCFilters = ({ cat, setCat, brand, setBrand, priceMin, setPriceMin, priceMax, setPriceMax, onlyOffers, setOnlyOffers, inStock, setInStock, onClear, counts }) => {
+const FCFilters = ({ categories, brands, cat, setCat, brand, setBrand, priceMin, setPriceMin, priceMax, setPriceMax, onlyOffers, setOnlyOffers, inStock, setInStock, onClear, counts }) => {
   return (
     <aside className="fc-filters">
       <h3>Filtros</h3>
 
       <div className="fc-filter-group">
         <h4>Categoría</h4>
-        {FC_CATEGORIES.map(c => (
+        {categories.map(c => (
           <label key={c.id} className="fc-filter-opt">
             <input
               type="checkbox"
@@ -219,7 +228,7 @@ const FCFilters = ({ cat, setCat, brand, setBrand, priceMin, setPriceMin, priceM
 
       <div className="fc-filter-group">
         <h4>Marca</h4>
-        {[...new Set(FC_PRODUCTS.map(p => p.brand))].sort().slice(0, 8).map(b => (
+        {brands.slice(0, 8).map(b => (
           <label key={b} className="fc-filter-opt">
             <input
               type="checkbox"
@@ -252,18 +261,9 @@ const FCFilters = ({ cat, setCat, brand, setBrand, priceMin, setPriceMin, priceM
 };
 
 // ---------- CONTACT / UBICACIÓN ----------
-const FCContact = ({ address, phone }) => {
-  const today = new Date().getDay(); // 0=dom
+const FCContact = ({ address, addressDetail, phone, phoneDisplay, email, horarios, shopName }) => {
+  const today = new Date().getDay();
   const dayMap = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-  const horarios = [
-    { day: 'Lunes',     hr: '8:00 – 19:00' },
-    { day: 'Martes',    hr: '8:00 – 19:00' },
-    { day: 'Miércoles', hr: '8:00 – 19:00' },
-    { day: 'Jueves',    hr: '8:00 – 19:00' },
-    { day: 'Viernes',   hr: '8:00 – 19:00' },
-    { day: 'Sábado',    hr: '8:00 – 14:00' },
-    { day: 'Domingo',   hr: 'Cerrado', closed: true },
-  ];
   return (
     <section className="fc-section alt" id="contacto">
       <div className="fc-container">
@@ -280,7 +280,7 @@ const FCContact = ({ address, phone }) => {
             <div className="fc-info-block">
               <div className="label"><FCIcon name="pin" size={14}/> Dirección</div>
               <div className="value">{address}</div>
-              <div className="sub">Esquina Av. Mitre · entre Belgrano y Sarmiento</div>
+              {addressDetail && <div className="sub">{addressDetail}</div>}
             </div>
             <div className="fc-info-block">
               <div className="label"><FCIcon name="clock" size={14}/> Horarios</div>
@@ -298,25 +298,25 @@ const FCContact = ({ address, phone }) => {
             </div>
             <div className="fc-info-block">
               <div className="label"><FCIcon name="phone" size={14}/> Contacto</div>
-              <div className="value" style={{fontSize: 18}}>+54 11 0000-0000</div>
-              <div className="sub">ventas@ferreteriacentral.com.ar</div>
+              <div className="value" style={{fontSize: 18}}>{phoneDisplay}</div>
+              <div className="sub">{email}</div>
               <div style={{display:'flex', gap:10, marginTop: 16, flexWrap:'wrap'}}>
                 <FCBtn variant="whatsapp" icon="whatsapp" size="sm" onClick={() => window.open(`https://wa.me/${phone}`, '_blank')}>
                   WhatsApp
                 </FCBtn>
-                <FCBtn variant="ghost" icon="mail" size="sm">Email</FCBtn>
+                <FCBtn variant="ghost" icon="mail" size="sm" onClick={() => window.open(`mailto:${email}`, '_blank')}>Email</FCBtn>
               </div>
             </div>
           </div>
 
-          <FCMap address={address}/>
+          <FCMap shopName={shopName}/>
         </div>
       </div>
     </section>
   );
 };
 
-const FCMap = ({ address }) => (
+const FCMap = ({ shopName }) => (
   <div className="fc-map">
     <svg className="map-bg" viewBox="0 0 600 480" preserveAspectRatio="xMidYMid slice">
       <defs>
@@ -326,54 +326,42 @@ const FCMap = ({ address }) => (
       </defs>
       <rect width="600" height="480" fill="#F3ECDC"/>
       <rect width="600" height="480" fill="url(#grid)"/>
-      {/* Streets — main horizontal */}
       <path d="M0 240 L600 240" stroke="#A89A82" strokeWidth="22"/>
       <path d="M0 240 L600 240" stroke="#FBF7EE" strokeWidth="14"/>
-      {/* main vertical */}
       <path d="M300 0 L300 480" stroke="#A89A82" strokeWidth="18"/>
       <path d="M300 0 L300 480" stroke="#FBF7EE" strokeWidth="11"/>
-      {/* secondary */}
       <path d="M0 100 L600 100" stroke="#C8BEA4" strokeWidth="8"/>
       <path d="M0 380 L600 380" stroke="#C8BEA4" strokeWidth="8"/>
       <path d="M120 0 L120 480" stroke="#C8BEA4" strokeWidth="8"/>
       <path d="M480 0 L480 480" stroke="#C8BEA4" strokeWidth="8"/>
-      {/* blocks fill */}
-      <rect x="20" y="20" width="80" height="60" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="140" y="20" width="140" height="60" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="320" y="20" width="140" height="60" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="500" y="20" width="80" height="60" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="20" y="120" width="80" height="100" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="140" y="120" width="140" height="100" fill="#ECE3CC" stroke="#D9CFB5"/>
+      {[
+        [20,20,80,60],[140,20,140,60],[320,20,140,60],[500,20,80,60],
+        [20,120,80,100],[140,120,140,100],[500,120,80,100],
+        [20,260,80,100],[140,260,140,100],[320,260,140,100],[500,260,80,100],
+        [20,400,80,60],[140,400,140,60],[320,400,140,60],[500,400,80,60],
+      ].map(([x,y,w,h], i) => (
+        <rect key={i} x={x} y={y} width={w} height={h} fill="#ECE3CC" stroke="#D9CFB5"/>
+      ))}
       <rect x="320" y="120" width="140" height="100" fill="#DCE9CC" stroke="#D9CFB5"/>
-      <rect x="500" y="120" width="80" height="100" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="20" y="260" width="80" height="100" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="140" y="260" width="140" height="100" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="320" y="260" width="140" height="100" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="500" y="260" width="80" height="100" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="20" y="400" width="80" height="60" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="140" y="400" width="140" height="60" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="320" y="400" width="140" height="60" fill="#ECE3CC" stroke="#D9CFB5"/>
-      <rect x="500" y="400" width="80" height="60" fill="#ECE3CC" stroke="#D9CFB5"/>
-      {/* labels */}
       <text x="50" y="245" fontFamily="JetBrains Mono" fontSize="9" fill="#76664F" letterSpacing="1">AV. SAN MARTÍN</text>
       <text x="305" y="155" fontFamily="JetBrains Mono" fontSize="9" fill="#76664F" letterSpacing="1" transform="rotate(-90 305 155)">AV. MITRE</text>
     </svg>
     <div className="fc-map-pin">
       <div className="head"><FCIcon name="pin" size={22}/></div>
-      <div className="tag">Ferretería Central</div>
+      <div className="tag">{shopName}</div>
     </div>
   </div>
 );
 
 // ---------- FOOTER ----------
-const FCFooter = ({ name }) => (
+const FCFooter = ({ name, categories, address, phoneDisplay, email, cuit }) => (
   <footer className="fc-footer">
     <div className="fc-container">
       <div className="fc-footer-grid">
         <div>
           <h5>{name}</h5>
           <p style={{maxWidth: 280, lineHeight: 1.6, fontSize: 14}}>
-            Ferretería industrial con más de 35 años de trayectoria. Stock permanente, marcas líderes y atención técnica.
+            Ferretería industrial con stock permanente, marcas líderes y atención técnica.
           </p>
           <div style={{display:'flex', gap: 10, marginTop: 14}}>
             <a href="#" aria-label="Instagram"><FCIcon name="instagram"/></a>
@@ -384,7 +372,7 @@ const FCFooter = ({ name }) => (
         <div>
           <h5>Catálogo</h5>
           <ul>
-            {FC_CATEGORIES.slice(0, 5).map(c => <li key={c.id}><a href="#">{c.short}</a></li>)}
+            {categories.slice(0, 5).map(c => <li key={c.id}><a href="#categorias">{c.short}</a></li>)}
             <li><a href="#ofertas">Ofertas vigentes</a></li>
           </ul>
         </div>
@@ -395,22 +383,21 @@ const FCFooter = ({ name }) => (
             <li><a href="#">Envíos al interior</a></li>
             <li><a href="#">Devoluciones</a></li>
             <li><a href="#">Cuenta corriente</a></li>
-            <li><a href="#">Para profesionales</a></li>
+            <li><a href="admin/" style={{color:'var(--fc-primary)'}}>Panel de admin →</a></li>
           </ul>
         </div>
         <div>
           <h5>Contacto</h5>
           <ul>
-            <li>Av. San Martín 1234</li>
-            <li>CABA, Argentina</li>
-            <li>+54 11 0000-0000</li>
-            <li>ventas@ferreteriacentral.com.ar</li>
+            <li>{address}</li>
+            <li>{phoneDisplay}</li>
+            <li>{email}</li>
           </ul>
         </div>
       </div>
       <div className="fc-footer-bottom">
         <span>© 2026 {name} · Todos los derechos reservados</span>
-        <span>CUIT 30-00000000-0 · Diseñado en Argentina</span>
+        <span>CUIT {cuit} · Diseñado en Argentina</span>
       </div>
     </div>
   </footer>

@@ -58,6 +58,7 @@ const FCIcon = ({ name, size = 24, ...rest }) => {
     truck: <g><rect x="2" y="7" width="12" height="9"/><path d="M14 10h4l3 3v3h-7"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></g>,
     star: <path d="M12 3l3 6 6 1-4 4 1 7-6-3-6 3 1-7-4-4 6-1z"/>,
     chevron: <path d="M9 6l6 6-6 6"/>,
+    menu: <g><path d="M4 7h16M4 12h16M4 17h16"/></g>,
     instagram: <g><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1" fill="currentColor"/></g>,
     facebook: <path d="M14 3h3v4h-3c-1 0-1 1-1 1v3h4l-1 4h-3v9h-4v-9h-3v-4h3v-3c0-3 2-5 5-5z"/>,
   };

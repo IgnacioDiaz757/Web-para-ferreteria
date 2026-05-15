@@ -52,7 +52,10 @@ const FCProductCard = ({ p, onAdd, onOpen, onFav, isFav }) => {
   return (
     <div className="fc-product">
       <div className="fc-product-img" onClick={() => onOpen(p)} style={{cursor:'pointer'}}>
-        <FCIcon name={p.icon} size={72}/>
+        {p.image
+          ? <img src={p.image} alt={p.name} style={{width:'100%',height:'100%',objectFit:'cover',position:'absolute',inset:0}}/>
+          : <FCIcon name={p.icon} size={72}/>
+        }
         <div className="fc-product-badges">
           {p.badge === 'hot' && <FCBadge kind="hot">Hot</FCBadge>}
           {p.badge === 'new' && <FCBadge kind="new">Nuevo</FCBadge>}
@@ -100,7 +103,10 @@ const FCProductModal = ({ product, onClose, onAdd }) => {
           <FCIcon name="x"/>
         </button>
         <div className="fc-modal-img">
-          <FCIcon name={p.icon} className="product-svg" />
+          {p.image
+            ? <img src={p.image} alt={p.name} style={{width:'100%',height:'100%',objectFit:'cover',position:'absolute',inset:0}}/>
+            : <FCIcon name={p.icon} className="product-svg" />
+          }
         </div>
         <div className="fc-modal-body">
           <div className="brand">{p.brand} · {p.sku}</div>
@@ -172,7 +178,12 @@ const FCCartDrawer = ({ open, items, onClose, onInc, onDec, onRemove, total, pho
           ) : (
             items.map(it => (
               <div className="fc-cart-item" key={it.id}>
-                <div className="thumb"><FCIcon name={it.icon} size={32}/></div>
+                <div className="thumb">
+                  {it.image
+                    ? <img src={it.image} alt="" style={{width:'100%',height:'100%',objectFit:'cover'}}/>
+                    : <FCIcon name={it.icon} size={32}/>
+                  }
+                </div>
                 <div>
                   <div className="name">{it.name}</div>
                   <div className="sku">{it.sku} · {it.brand}</div>

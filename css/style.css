@@ -761,6 +761,7 @@ img { max-width: 100%; display: block; }
 .fc-product-img {
   aspect-ratio: 1;
   background: var(--fc-bg-alt);
+  position: relative;
   border: 1.5px solid var(--fc-border);
   display: grid; place-items: center;
   position: relative;
