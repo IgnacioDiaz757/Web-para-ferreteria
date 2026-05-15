@@ -1,0 +1,201 @@
+/* ============================================================
+   VIVEROS UNIDOS — DESIGN TOKENS
+   Colors + Typography
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* ----- BRAND CORE ----- */
+  /* Sampled from the official logo. The magenta is the loud, hand-painted
+     mercado voice; the green is the working hands; the gold is the sun. */
+  --vu-magenta:        #E61D86;  /* primary brand, signage pink */
+  --vu-magenta-deep:   #B81568;  /* hover / pressed states */
+  --vu-magenta-soft:   #FBD8EA;  /* tinted backgrounds */
+
+  --vu-green:          #186133;  /* leaf, working green */
+  --vu-green-deep:     #0F3F22;  /* footers, dark surfaces */
+  --vu-green-bright:   #70B050;  /* fresh leaf accent */
+  --vu-green-soft:     #DCE9CC;  /* tinted backgrounds */
+
+  --vu-gold:           #F2D214;  /* sun ring, price highlights */
+  --vu-orange:         #F4A325;  /* sun center, warm accent */
+  --vu-orange-deep:    #EE8907;  /* hover / pressed */
+
+  /* ----- NEUTRALS — paper + soil ----- */
+  --vu-paper:          #FBF7EE;  /* default page background, cream paper */
+  --vu-paper-warm:     #F3ECDC;  /* alt section bg */
+  --vu-bone:           #ECE3CC;  /* dividers, soft cards */
+  --vu-soil:           #4A3B2A;  /* deepest body type */
+  --vu-soil-mid:       #76664F;  /* secondary type */
+  --vu-soil-soft:      #A89A82;  /* placeholders, captions */
+  --vu-white:          #FFFFFF;
+  --vu-black:          #1A140C;
+
+  /* ----- SEMANTIC ----- */
+  --vu-bg:             var(--vu-paper);
+  --vu-bg-alt:         var(--vu-paper-warm);
+  --vu-bg-dark:        var(--vu-green-deep);
+  --vu-surface:        var(--vu-white);
+  --vu-border:         #D9CFB5;
+  --vu-border-strong:  var(--vu-soil);
+  --vu-fg:             var(--vu-soil);
+  --vu-fg-strong:      var(--vu-black);
+  --vu-fg-muted:       var(--vu-soil-mid);
+  --vu-fg-faint:       var(--vu-soil-soft);
+  --vu-fg-on-dark:     var(--vu-paper);
+
+  --vu-accent:         var(--vu-magenta);
+  --vu-accent-fg:      var(--vu-white);
+  --vu-success:        var(--vu-green);
+  --vu-warning:        var(--vu-orange);
+  --vu-danger:         #C72525;
+  --vu-info:           #2B6CB0;
+
+  /* ----- TYPOGRAPHY FAMILIES ----- */
+  --vu-font-display:  'Archivo Black', 'Arial Black', Impact, sans-serif;
+  --vu-font-heavy:    'Archivo', 'Helvetica Neue', Arial, sans-serif; /* uses 900 weight */
+  --vu-font-body:     'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+  --vu-font-mono:     'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  /* ----- TYPE SCALE ----- */
+  --vu-text-xs:    12px;
+  --vu-text-sm:    14px;
+  --vu-text-base:  16px;
+  --vu-text-md:    18px;
+  --vu-text-lg:    22px;
+  --vu-text-xl:    28px;
+  --vu-text-2xl:   36px;
+  --vu-text-3xl:   48px;
+  --vu-text-4xl:   64px;
+  --vu-text-5xl:   88px;
+  --vu-text-6xl:   120px;
+
+  /* ----- SPACING (4pt grid) ----- */
+  --vu-space-1:  4px;
+  --vu-space-2:  8px;
+  --vu-space-3:  12px;
+  --vu-space-4:  16px;
+  --vu-space-5:  24px;
+  --vu-space-6:  32px;
+  --vu-space-7:  48px;
+  --vu-space-8:  64px;
+  --vu-space-9:  96px;
+  --vu-space-10: 128px;
+
+  /* ----- RADII — squared, agricultural ----- */
+  /* Viveros leans crate-like: small radii or pill. Avoid the 12-16px
+     "saas card" radius. */
+  --vu-radius-none: 0;
+  --vu-radius-sm:   2px;
+  --vu-radius-md:   4px;
+  --vu-radius-lg:   8px;
+  --vu-radius-pill: 999px;
+
+  /* ----- BORDERS ----- */
+  --vu-border-w:       1.5px;       /* default */
+  --vu-border-w-bold:  3px;         /* stamped / signage emphasis */
+
+  /* ----- SHADOWS — flat, like printed crate stickers ----- */
+  --vu-shadow-sm: 0 1px 0 0 rgba(74, 59, 42, .18);
+  --vu-shadow-md: 0 2px 0 0 var(--vu-soil);
+  --vu-shadow-lg: 4px 4px 0 0 var(--vu-soil);   /* "stamp" offset */
+  --vu-shadow-stamp: 6px 6px 0 0 var(--vu-green-deep);
+
+  /* ----- MOTION ----- */
+  --vu-ease:        cubic-bezier(.2, .8, .2, 1);
+  --vu-ease-snap:   cubic-bezier(.4, 1.4, .6, 1);
+  --vu-dur-fast:    120ms;
+  --vu-dur:         200ms;
+  --vu-dur-slow:    400ms;
+}
+
+/* ============================================================
+   SEMANTIC TYPOGRAPHY
+   Use these classes / element styles on real components.
+   ============================================================ */
+
+html, body {
+  font-family: var(--vu-font-body);
+  color: var(--vu-fg);
+  background: var(--vu-bg);
+  font-size: var(--vu-text-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.vu-display-xl,
+.vu-display-lg,
+.vu-display-md,
+.vu-display-sm,
+h1.vu, h2.vu, h3.vu {
+  font-family: var(--vu-font-display);
+  font-weight: 400;          /* Archivo Black is single-weight */
+  color: var(--vu-fg-strong);
+  letter-spacing: -0.01em;
+  line-height: .95;
+  text-transform: uppercase;
+}
+
+.vu-display-xl  { font-size: var(--vu-text-6xl); letter-spacing: -0.02em; }
+.vu-display-lg  { font-size: var(--vu-text-5xl); }
+.vu-display-md  { font-size: var(--vu-text-4xl); }
+.vu-display-sm  { font-size: var(--vu-text-3xl); }
+
+h1.vu { font-size: var(--vu-text-4xl); }
+h2.vu { font-size: var(--vu-text-3xl); }
+h3.vu { font-size: var(--vu-text-2xl); line-height: 1.05; }
+
+h4.vu, .vu-eyebrow {
+  font-family: var(--vu-font-body);
+  font-weight: 700;
+  font-size: var(--vu-text-sm);
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--vu-magenta);
+  line-height: 1.2;
+}
+
+h5.vu {
+  font-family: var(--vu-font-body);
+  font-weight: 700;
+  font-size: var(--vu-text-lg);
+  line-height: 1.25;
+  color: var(--vu-fg-strong);
+}
+
+p.vu, .vu-body {
+  font-family: var(--vu-font-body);
+  font-size: var(--vu-text-base);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--vu-fg);
+}
+
+.vu-body-lg { font-size: var(--vu-text-md); line-height: 1.55; }
+.vu-body-sm { font-size: var(--vu-text-sm); line-height: 1.5; }
+
+.vu-caption {
+  font-family: var(--vu-font-body);
+  font-size: var(--vu-text-xs);
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--vu-fg-muted);
+  text-transform: uppercase;
+}
+
+.vu-price {
+  font-family: var(--vu-font-display);
+  font-size: var(--vu-text-2xl);
+  color: var(--vu-magenta);
+  line-height: 1;
+}
+
+code.vu, .vu-mono {
+  font-family: var(--vu-font-mono);
+  font-size: .92em;
+  background: var(--vu-bone);
+  padding: 2px 6px;
+  border-radius: var(--vu-radius-sm);
+}
